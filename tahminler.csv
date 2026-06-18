@@ -1,0 +1,120 @@
+asama|pozisyon|emircan|celil|serhat|erdem|serdar|ekin|oguz|baris
+Grup A|1|meksika|meksika|meksika|meksika|çekya|meksika|meksika|meksika
+Grup A|2|güney kore|güney kore|güney kore|çekya|meksika|çekya|güney kore|güney kore
+Grup A|3|çekya|güney afrika|çekya|güney afrika|güney kore|güney kore|güney afrika|çekya
+Grup A|4|güney afrika|çekya|güney afrika|güney kore|güney afrika|güney afrika|çekya|güney afrika
+Grup B|1|isviçre|katar|isviçre|isviçre|isviçre|isviçre|kanada|isviçre
+Grup B|2|bosna|kanada|kanada|kanada|kanada|bosna|isviçre|kanada
+Grup B|3|kanada|isviçre|bosna|katar|bosna|katar|bosna|bosna
+Grup B|4|katar|bosna|katar|bosna|katar|kanada|katar|katar
+Grup C|1|brezilya|brezilya|brezilya|brezilya|brezilya|fas|brezilya|brezilya
+Grup C|2|fas|iskoçya|fas|fas|fas|iskoçya|iskoçya|fas
+Grup C|3|iskoçya|fas|iskoçya|iskoçya|iskoçya|brezilya|fas|iskoçya
+Grup C|4|haiti|haiti|haiti|haiti|haiti|haiti|haiti|haiti
+Grup D|1|türkiye|türkiye|türkiye|türkiye|türkiye|abd|türkiye|türkiye
+Grup D|2|avustralya|abd|abd|abd|abd|türkiye|abd|abd
+Grup D|3|abd|avustralya|avustralya|paraguay|avustralya|paraguay|avustralya|avustralya
+Grup D|4|paraguay|paraguay|paraguay|avustralya|paraguay|avustralya|paraguay|paraguay
+Grup E|1|almanya|almanya|almanya|almanya|almanya|almanya|almanya|almanya
+Grup E|2|ekvador|ekvador|ekvador|fildişi|fildişi|fildişi|ekvador|fildişi
+Grup E|3|fildişi|curaçao|fildişi|ekvador|ekvador|ekvador|fildişi|ekvador
+Grup E|4|curaçao|fildişi|curaçao|curaçao|curaçao|curaçao|curaçao|curaçao
+Grup F|1|hollanda|japonya|hollanda|hollanda|hollanda|hollanda|hollanda|hollanda
+Grup F|2|japonya|hollanda|japonya|japonya|isveç|isveç|japonya|japonya
+Grup F|3|isveç|tunus|isveç|isveç|japonya|japonya|isveç|isveç
+Grup F|4|tunus|isveç|tunus|tunus|tunus|tunus|tunus|tunus
+Grup G|1|belçika|belçika|belçika|belçika|belçika|belçika|belçika|belçika
+Grup G|2|mısır|yeni zelanda|mısır|mısır|mısır|yeni zelanda|mısır|mısır
+Grup G|3|iran|mısır|iran|iran|iran|mısır|yeni zelanda|iran
+Grup G|4|yeni zelanda|iran|yeni zelanda|yeni zelanda|yeni zelanda|iran|iran|yeni zelanda
+Grup H|1|ispanya|ispanya|ispanya|ispanya|ispanya|ispanya|ispanya|ispanya
+Grup H|2|uruguay|uruguay|uruguay|uruguay|uruguay|uruguay|uruguay|uruguay
+Grup H|3|suudi arabistan|suudi arabistan|suudi arabistan|suudi arabistan|suudi arabistan|suudi arabistan|suudi arabistan|suudi arabistan
+Grup H|4|yeşil burun|yeşil burun|yeşil burun|yeşil burun|yeşil burun|yeşil burun|yeşil burun|yeşil burun
+Grup I|1|fransa|fransa|fransa|fransa|fransa|fransa|fransa|fransa
+Grup I|2|norveç|norveç|senegal|norveç|norveç|norveç|norveç|norveç
+Grup I|3|senegal|senegal|norveç|senegal|senegal|senegal|senegal|senegal
+Grup I|4|ırak|ırak|ırak|ırak|ırak|ırak|ırak|ırak
+Grup J|1|arjantin|arjantin|arjantin|arjantin|arjantin|arjantin|arjantin|arjantin
+Grup J|2|avusturya|avusturya|avusturya|avusturya|cezayir|avusturya|avusturya|avusturya
+Grup J|3|cezayir|cezayir|cezayir|ürdün|avusturya|cezayir|cezayir|ürdün
+Grup J|4|ürdün|ürdün|ürdün|cezayir|ürdün|ürdün|ürdün|cezayir
+Grup K|1|portekiz|portekiz|portekiz|portekiz|portekiz|portekiz|portekiz|portekiz
+Grup K|2|kolombiya|kolombiya|kolombiya|kolombiya|kolombiya|kolombiya|kolombiya|kolombiya
+Grup K|3|kongo|kongo|özbekistan|özbekistan|özbekistan|özbekistan|kongo|özbekistan
+Grup K|4|özbekistan|özbekistan|kongo|kongo|kongo|kongo|özbekistan|kongo
+Grup L|1|hırvatistan|ingiltere|ingiltere|ingiltere|ingiltere|ingiltere|ingiltere|ingiltere
+Grup L|2|ingiltere|panama|hırvatistan|hırvatistan|hırvatistan|hırvatistan|hırvatistan|hırvatistan
+Grup L|3|gana|hırvatistan|gana|panama|gana|gana|gana|gana
+Grup L|4|panama|gana|panama|gana|panama|panama|panama|panama
+En Iyi 3.ler|1|çekya|avustralya|bosna|isveç|gana|güney kore|bosna|senegal
+En Iyi 3.ler|2|kanada|suudi arabistan|çekya|iskoçya|avusturya|brezilya|isveç|isveç
+En Iyi 3.ler|3|iskoçya|cezayir|iskoçya|güney afrika|iran|ekvador|güney afrika|iran
+En Iyi 3.ler|4|abd|isviçre|fildişi|ekvador|japonya|japonya|fildişi|iskoçya
+En Iyi 3.ler|5|isveç|tunus|avustralya|paraguay|iskoçya|katar|senegal|çekya
+En Iyi 3.ler|6|iran|senegal|isveç|özbekistan|bosna|suudi arabistan|gana|ekvador
+En Iyi 3.ler|7|fildişi|fas|cezayir|senegal|senegal|senegal|yeni zelanda|bosna
+En Iyi 3.ler|8|cezayir|güney afrika|norveç|iran|güney kore|mısır|avustralya|özbekistan
+Son 32|1|almanya|almanya|almanya|almanya|almanya|almanya|almanya|almanya
+Son 32|2|çekya|fas|avustralya|paraguay|japonya|brezilya|avustralya|iskoçya
+Son 32|3|fransa|fransa|fransa|fransa|fransa|fransa|fransa|fransa
+Son 32|4|kanada|tunus|isveç|isveç|iran|japonya|isveç|isveç
+Son 32|5|güney kore|güney kore|güney kore|çekya|meksika|çekya|güney kore|güney kore
+Son 32|6|bosna|kanada|kanada|kanada|kanada|bosna|isviçre|kanada
+Son 32|7|hollanda|japonya|hollanda|hollanda|hollanda|hollanda|hollanda|hollanda
+Son 32|8|fas|iskoçya|fas|fas|fas|iskoçya|iskoçya|fas
+Son 32|9|kolombiya|kolombiya|kolombiya|kolombiya|kolombiya|kolombiya|kolombiya|kolombiya
+Son 32|10|ingiltere|panama|hırvatistan|hırvatistan|hırvatistan|hırvatistan|hırvatistan|hırvatistan
+Son 32|11|ispanya|ispanya|ispanya|ispanya|ispanya|ispanya|ispanya|ispanya
+Son 32|12|avusturya|avusturya|avusturya|avusturya|cezayir|avusturya|avusturya|avusturya
+Son 32|13|türkiye|türkiye|türkiye|türkiye|türkiye|abd|türkiye|türkiye
+Son 32|14|fildişi|isviçre|bosna|ekvador|bosna|katar|bosna|bosna
+Son 32|15|belçika|belçika|belçika|belçika|belçika|belçika|belçika|belçika
+Son 32|16|isveç|güney afrika|çekya|güney afrika|güney kore|güney kore|güney afrika|çekya
+Son 32|17|brezilya|brezilya|brezilya|brezilya|brezilya|fas|brezilya|brezilya
+Son 32|18|japonya|hollanda|japonya|japonya|isveç|isveç|japonya|japonya
+Son 32|19|ekvador|ekvador|ekvador|fildişi|fildişi|fildişi|ekvador|fildişi
+Son 32|20|norveç|norveç|senegal|norveç|norveç|norveç|norveç|norveç
+Son 32|21|meksika|meksika|meksika|meksika|çekya|meksika|meksika|meksika
+Son 32|22|iskoçya|suudi arabistan|iskoçya|iskoçya|iskoçya|suudi arabistan|fildişi|ekvador
+Son 32|23|hırvatistan|ingiltere|ingiltere|ingiltere|ingiltere|ingiltere|ingiltere|ingiltere
+Son 32|24|abd|senegal|norveç|özbekistan|senegal|senegal|senegal|özbekistan
+Son 32|25|arjantin|arjantin|arjantin|arjantin|arjantin|arjantin|arjantin|arjantin
+Son 32|26|uruguay|uruguay|uruguay|uruguay|uruguay|uruguay|uruguay|uruguay
+Son 32|27|avustralya|abd|abd|abd|abd|türkiye|abd|abd
+Son 32|28|mısır|yeni zelanda|mısır|mısır|mısır|yeni zelanda|mısır|mısır
+Son 32|29|isviçre|katar|isviçre|isviçre|isviçre|isviçre|kanada|isviçre
+Son 32|30|iran|cezayir|cezayir|iran|avusturya|mısır|yeni zelanda|iran
+Son 32|31|portekiz|portekiz|portekiz|portekiz|portekiz|portekiz|portekiz|portekiz
+Son 32|32|cezayir|avustralya|fildişi|senegal|gana|ekvador|gana|senegal
+Son 16|1|almanya|almanya|almanya|almanya|almanya|almanya|almanya|almanya
+Son 16|2|fransa|fransa|fransa|fransa|fransa|fransa|fransa|fransa
+Son 16|3|güney kore|kanada|kanada|çekya|meksika|çekya|güney kore|güney kore
+Son 16|4|hollanda|japonya|hollanda|hollanda|hollanda|hollanda|hollanda|hollanda
+Son 16|5|ingiltere|panama|kolombiya|hırvatistan|hırvatistan|hırvatistan|kolombiya|hırvatistan
+Son 16|6|ispanya|ispanya|ispanya|ispanya|ispanya|ispanya|ispanya|ispanya
+Son 16|7|türkiye|türkiye|türkiye|türkiye|türkiye|abd|türkiye|türkiye
+Son 16|8|belçika|belçika|belçika|belçika|belçika|belçika|belçika|belçika
+Son 16|9|brezilya|brezilya|brezilya|brezilya|brezilya|fas|brezilya|brezilya
+Son 16|10|norveç|norveç|senegal|norveç|norveç|norveç|norveç|norveç
+Son 16|11|meksika|suudi arabistan|meksika|meksika|çekya|meksika|meksika|meksika
+Son 16|12|hırvatistan|ingiltere|ingiltere|ingiltere|ingiltere|ingiltere|ingiltere|ingiltere
+Son 16|13|arjantin|arjantin|arjantin|arjantin|arjantin|arjantin|arjantin|arjantin
+Son 16|14|mısır|yeni zelanda|abd|mısır|abd|türkiye|mısır|abd
+Son 16|15|isviçre|katar|isviçre|isviçre|isviçre|isviçre|kanada|isviçre
+Son 16|16|portekiz|portekiz|portekiz|portekiz|portekiz|portekiz|portekiz|portekiz
+Ceyrek Final|1|fransa|fransa|fransa|fransa|fransa|fransa|fransa|fransa
+Ceyrek Final|2|hollanda|japonya|hollanda|hollanda|hollanda|hollanda|hollanda|hollanda
+Ceyrek Final|3|ingiltere|ispanya|ispanya|ispanya|ispanya|ispanya|ispanya|ispanya
+Ceyrek Final|4|türkiye|türkiye|türkiye|türkiye|türkiye|belçika|türkiye|türkiye
+Ceyrek Final|5|brezilya|brezilya|brezilya|norveç|brezilya|fas|brezilya|brezilya
+Ceyrek Final|6|meksika|suudi arabistan|ingiltere|ingiltere|ingiltere|ingiltere|ingiltere|ingiltere
+Ceyrek Final|7|arjantin|arjantin|arjantin|arjantin|arjantin|türkiye|arjantin|arjantin
+Ceyrek Final|8|portekiz|portekiz|portekiz|portekiz|portekiz|portekiz|portekiz|portekiz
+Yari Final|1|fransa|fransa|fransa|fransa|fransa|fransa|fransa|fransa
+Yari Final|2|türkiye|ispanya|ispanya|ispanya|ispanya|ispanya|ispanya|ispanya
+Yari Final|3|brezilya|brezilya|ingiltere|ingiltere|brezilya|ingiltere|brezilya|ingiltere
+Yari Final|4|portekiz|portekiz|portekiz|portekiz|arjantin|portekiz|arjantin|arjantin
+Final|1|fransa|ispanya|fransa|ispanya|fransa|ispanya|fransa|fransa
+Final|2|portekiz|portekiz|portekiz|portekiz|brezilya|ingiltere|brezilya|ingiltere
+Sampiyon|1|fransa|ispanya|fransa|ispanya|fransa|ispanya|fransa|fransa

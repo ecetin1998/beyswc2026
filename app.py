@@ -366,7 +366,8 @@ header[data-testid="stHeader"]{background:transparent;}
 .kteams.pairs{gap:8px;}
 .matchup{display:inline-flex; align-items:center; gap:7px; background:var(--panel2); border:1px solid var(--line); border-radius:999px; padding:5px 12px; font-family:'Inter',sans-serif; font-size:12px;}
 .matchup .mt{color:var(--tx);}
-.matchup .mt.reached{color:#c7ecd4; font-weight:600;}
+.matchup .mt.ok{color:#c7ecd4; font-weight:600;}
+.matchup .mt.no{color:#f1b0b2;}
 .matchup .vs{color:var(--mut); font-size:10px;}
 .matchup.pairhit{border-color:var(--grp); background:rgba(69,179,107,.14);}
 .matchup .mt.win{color:#c7ecd4; font-weight:700;}
@@ -488,13 +489,14 @@ def _round_card(title, teams, actual_set=None, accent=""):
 
 def _pair_card(title, teams, reached=None, pairset=None):
     """Komşu ikilileri eşleşme (matchup) kutusu olarak göster.
-    Takım yeşil = o tura ulaştı · kutu yeşil = eşleşme birebir tuttu."""
+    Tur belli olduysa: ulaşan takım yeşil, ulaşamayan kırmızı · kutu yeşil = eşleşme tuttu."""
+    decided = bool(reached)
     units = ""
     for i in range(0, len(teams) - 1, 2):
         a, b = teams[i], teams[i + 1]
         ph = "pairhit" if (pairset and frozenset({a, b}) in pairset) else ""
-        ca = "reached" if (reached and a in reached) else ""
-        cb = "reached" if (reached and b in reached) else ""
+        ca = ("ok" if a in reached else "no") if decided else ""
+        cb = ("ok" if b in reached else "no") if decided else ""
         units += (f'<div class="matchup {ph}"><span class="mt {ca}">{a}</span>'
                   f'<span class="vs">–</span><span class="mt {cb}">{b}</span></div>')
     return (f'<div class="kround"><div class="krhead">{title}'
@@ -608,8 +610,8 @@ st.markdown('<div class="sec-title">Tahminler</div>', unsafe_allow_html=True)
 who = st.selectbox("Kimin tahminleri?", C.PLAYERS,
                    index=C.PLAYERS.index(rows[0]["Oyuncu"]))
 st.caption("Gruplar — rozet: yeşil ilk 2, mavi en iyi 3., sönük elenen · isim: yeşil doğru, "
-           "kırmızı yanlış sıra.  Eşleşmeler (komşu ikililer): kutu yeşil = ikili tuttu, "
-           "takım yeşil = o tura ulaştı.")
+           "kırmızı yanlış sıra.  Eşleşmeler: takım yeşil = o tura ulaştı, kırmızı = ulaşamadı, "
+           "kutu yeşil = ikili birebir tuttu.")
 st.markdown(player_predictions_html(preds[who], actual), unsafe_allow_html=True)
 
 st.markdown('<div class="sec-title">Gerçek Sonuçlar</div>', unsafe_allow_html=True)

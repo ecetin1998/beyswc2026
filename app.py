@@ -348,10 +348,10 @@ header[data-testid="stHeader"]{background:transparent;}
 .chiprow{display:flex; flex-wrap:wrap; gap:7px; align-items:center; margin:8px 0 2px;}
 .chiprow b{font-family:'Inter',sans-serif; font-size:12px; color:var(--mut);}
 .tchip{font-family:'Inter',sans-serif; font-size:12px; background:var(--panel); border:1px solid var(--line); border-radius:999px; padding:4px 10px;}
-.tchip.hit{border-color:var(--grp); background:rgba(69,179,107,.14); color:#c7ecd4;}
+.tchip.hit{border-color:var(--grp); background:rgba(69,179,107,.14); color:#58e08e; font-weight:600;}
 .sec-title{font-family:'Anton',sans-serif; font-size:22px; letter-spacing:.5px; margin:26px 0 6px; text-align:center;}
-.tn.hit{color:#c7ecd4;}
-.tn.near{color:#f1b0b2;}
+.tn.hit{color:#58e08e; font-weight:700;}
+.tn.near{color:#c97b7e; font-weight:400;}
 .rules{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px; margin-top:4px;}
 .rblock{background:var(--panel); border:1px solid var(--line); border-radius:12px; overflow:hidden;}
 .rblock .rhead{font-family:'Anton',sans-serif; letter-spacing:.5px; font-size:14px; padding:9px 12px; border-top:3px solid var(--mut);}
@@ -366,11 +366,11 @@ header[data-testid="stHeader"]{background:transparent;}
 .kteams.pairs{gap:8px;}
 .matchup{display:inline-flex; align-items:center; gap:7px; background:var(--panel2); border:1px solid var(--line); border-radius:999px; padding:5px 12px; font-family:'Inter',sans-serif; font-size:12px;}
 .matchup .mt{color:var(--tx);}
-.matchup .mt.ok{color:#c7ecd4; font-weight:600;}
-.matchup .mt.no{color:#f1b0b2;}
+.matchup .mt.ok{color:#58e08e; font-weight:700;}
+.matchup .mt.no{color:#c97b7e; font-weight:400;}
 .matchup .vs{color:var(--mut); font-size:10px;}
 .matchup.pairhit{border-color:var(--grp); background:rgba(69,179,107,.14);}
-.matchup .mt.win{color:#c7ecd4; font-weight:700;}
+.matchup .mt.win{color:#58e08e; font-weight:700;}
 .matchup .mt.lose{opacity:.4;}
 .kround.champ{border-color:rgba(245,196,81,.5); background:linear-gradient(180deg, rgba(245,196,81,.10), var(--panel));}
 .kround.champ .krhead{color:var(--gold);}

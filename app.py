@@ -347,6 +347,20 @@ header[data-testid="stHeader"]{background:transparent;}
 .grow.hit .gp{background:var(--grp); color:#08130c;}
 .grow.near .gp{background:var(--red); color:#fff;}
 .grow.hit span:last-child{color:#c7ecd4;}
+.rules{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px; margin-top:4px;}
+.rblock{background:var(--panel); border:1px solid var(--line); border-radius:12px; overflow:hidden;}
+.rblock .rhead{font-family:'Anton',sans-serif; letter-spacing:.5px; font-size:14px; padding:9px 12px; border-top:3px solid var(--mut);}
+.rblock.grp .rhead{border-color:var(--grp);} .rblock.kw .rhead{border-color:var(--kw);} .rblock.kp .rhead{border-color:var(--kp);}
+.rrow{display:flex; justify-content:space-between; gap:10px; padding:7px 12px; font-family:'Inter',sans-serif; font-size:13px; border-top:1px solid var(--line);}
+.rrow span{color:var(--mut);} .rrow b{color:var(--tx); font-family:'Space Grotesk',monospace;}
+.rnote{font-family:'Inter',sans-serif; font-size:11.5px; color:var(--mut); margin-top:10px; line-height:1.55;}
+.kround{background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:11px 14px; margin-top:8px;}
+.krhead{font-family:'Inter',sans-serif; font-weight:600; font-size:11.5px; letter-spacing:.7px; text-transform:uppercase; color:var(--mut); margin-bottom:9px; display:flex; align-items:center; gap:8px;}
+.krcnt{font-family:'Space Grotesk',monospace; font-size:11px; color:var(--mut); background:var(--panel2); border:1px solid var(--line); border-radius:999px; padding:1px 7px;}
+.kteams{display:flex; flex-wrap:wrap; gap:6px;}
+.kround.champ{border-color:rgba(245,196,81,.5); background:linear-gradient(180deg, rgba(245,196,81,.10), var(--panel));}
+.kround.champ .krhead{color:var(--gold);}
+.kround.champ .tchip{border-color:var(--gold); color:var(--gold); font-weight:600;}
 @media(max-width:560px){ .pod-pts{font-size:23px;} .podium{gap:6px;} .pod{padding:10px 6px 12px;} }
 </style>"""
 st.markdown(CSS, unsafe_allow_html=True)
@@ -408,16 +422,47 @@ def groups_html(actual):
     return f'<div class="ggrid">{cards}</div>'
 
 
-def _tagrow(label, teams):
-    return (f'<div class="chiprow"><b>{label}</b>'
-            + "".join(f'<span class="tchip">{t}</span>' for t in teams) + "</div>")
+def rules_html():
+    g, w, pr = C.GROUP_POINTS, C.KO_WINNER_POINTS, C.KO_PAIR_POINTS
+    grp = [("1. sıra doğru", g[1]), ("2. sıra", g[2]), ("3. sıra", g[3]),
+           ("4. sıra", g[4]), ("Tam sıra (1-2-3-4) bonus", C.GROUP_EXACT_BONUS)]
+    ko = [("Her doğru 'en iyi 3.'", C.BEST_THIRD_POINTS),
+          ("Son 16'ya kalan (R32 kazananı)", w["Son 16"]),
+          ("Çeyreğe kalan (R16 kazananı)", w["Ceyrek Final"]),
+          ("Yarıya kalan (çeyrek kazananı)", w["Yari Final"]),
+          ("Finale kalan (yarı kazananı)", w["Final"]),
+          ("Final kazananı (şampiyon)", w["Sampiyon"]),
+          ("Şampiyon bonusu", C.CHAMPION_BONUS)]
+    pair = [("Son 32 eşleşmesi", pr["Son 32"]), ("Son 16 eşleşmesi", pr["Son 16"]),
+            ("Çeyrek eşleşmesi", pr["Ceyrek Final"]), ("Yarı eşleşmesi", pr["Yari Final"]),
+            ("Final eşleşmesi (iki finalist)", pr["Final"])]
+
+    def block(title, accent, items):
+        rrows = "".join(f'<div class="rrow"><span>{l}</span><b>+{v}</b></div>'
+                        for l, v in items)
+        return f'<div class="rblock {accent}"><div class="rhead">{title}</div>{rrows}</div>'
+
+    return ('<div class="rules">'
+            + block("GRUP · 360", "grp", grp)
+            + block("KNOCKOUT · 400", "kw", ko)
+            + block("DOĞRU EŞLEŞME · 240", "kp", pair)
+            + '</div>'
+            '<div class="rnote">'
+            '<b>Grup sırası eşitlikte:</b> puan → ikili maç (puan/averaj/gol) → genel averaj '
+            '→ genel gol → güncel FIFA sıralaması.<br>'
+            '<b>En iyi 3.ler:</b> 12 grup üçüncüsü aynı kriterle (ikili maç hariç, çünkü '
+            'birbirleriyle oynamıyorlar) sıralanır, en iyi 8\'i tur atlar ve sayılır.<br>'
+            '<b>Kazanan puanı set bazlı</b> (takım o tura ulaştıysa), <b>eşleşme puanı</b> '
+            'ise iki takımı birden doğru bilmeyi gerektirir. Toplam tavan: 1000.</div>')
 
 
-def _pred_round(label, teams, actual_set):
+def _round_card(title, teams, actual_set=None, accent=""):
     chips = "".join(
         f'<span class="tchip {"hit" if (actual_set and t in actual_set) else ""}">{t}</span>'
         for t in teams)
-    return f'<div class="chiprow"><b>{label}</b>{chips}</div>'
+    return (f'<div class="kround {accent}"><div class="krhead">{title}'
+            f'<span class="krcnt">{len(teams)}</span></div>'
+            f'<div class="kteams">{chips}</div></div>')
 
 
 def player_predictions_html(pp, actual):
@@ -436,13 +481,13 @@ def player_predictions_html(pp, actual):
                       f'<span>{pick}</span></div>')
         cards += f'<div class="gcard"><div class="ghead">{g}</div>{grows}</div>'
     html = f'<div class="ggrid">{cards}</div>'
-    html += _pred_round("En İyi 3.ler", ordered(pp, "En Iyi 3.ler"), actual["best_third"])
+    html += _round_card("En İyi 3.ler", ordered(pp, "En Iyi 3.ler"), actual["best_third"])
     for label, key in [("Son 16", "Son 16"), ("Çeyrek", "Ceyrek Final"),
                        ("Yarı", "Yari Final"), ("Final", "Final")]:
-        html += _pred_round(label, ordered(pp, key), actual["round_set"].get(key, set()))
+        html += _round_card(label, ordered(pp, key), actual["round_set"].get(key, set()))
     champ = pp.get("Sampiyon", {}).get(1, "—")
     champ_set = {actual["champion"]} if actual["champion"] else set()
-    html += _pred_round("Şampiyon", [champ], champ_set)
+    html += _round_card("Şampiyon", [champ], champ_set, accent="champ")
     return html
 
 
@@ -488,6 +533,9 @@ st.markdown(f"""<div class="hero">
   </div>
 </div>""", unsafe_allow_html=True)
 
+with st.expander("📋 Puanlama nasıl hesaplanıyor? · maks 1000 puan"):
+    st.markdown(rules_html(), unsafe_allow_html=True)
+
 if err:
     st.error(f"Veri hatası: {err}")
 
@@ -500,18 +548,20 @@ st.caption("Yeşil = tuttu · kırmızı = doğru takım, yanlış sıra. "
            "En iyi 3.ler ve knockout, sonuçlar geldikçe canlı güncellenir.")
 st.markdown(player_predictions_html(preds[who], actual), unsafe_allow_html=True)
 
-with st.expander("Gerçek sonuçlar · grup sıralamaları"):
-    st.caption("Sıralama: puan → ikili maç → genel averaj → genel gol → FIFA sırası. "
-               "Yeşil = ilk 2 (tur atlar), mavi = 3. (en iyi 3 adayı).")
-    st.markdown(groups_html(actual), unsafe_allow_html=True)
-    extra = ""
-    if actual["best_third"]:
-        extra += _tagrow("En iyi 3.ler", sorted(actual["best_third"]))
-    for rnd in ["Son 16", "Ceyrek Final", "Yari Final", "Final"]:
-        s = actual["round_set"].get(rnd)
-        if s:
-            extra += _tagrow(rnd, sorted(s))
-    if actual["champion"]:
-        extra += _tagrow("Şampiyon", [actual["champion"]])
-    if extra:
-        st.markdown(extra, unsafe_allow_html=True)
+st.markdown('<div class="sec-title">Gerçek Sonuçlar</div>', unsafe_allow_html=True)
+st.caption("Grup sırası: puan → ikili maç → genel averaj → genel gol → FIFA. "
+           "Yeşil = ilk 2 (tur atlar), mavi = 3. (en iyi 3 adayı).")
+st.markdown(groups_html(actual), unsafe_allow_html=True)
+
+real = ""
+if actual["best_third"]:
+    real += _round_card("En İyi 3.ler (ilk 8)", sorted(actual["best_third"]))
+for key, lab in [("Son 16", "Son 16"), ("Ceyrek Final", "Çeyrek"),
+                 ("Yari Final", "Yarı"), ("Final", "Final")]:
+    s = actual["round_set"].get(key)
+    if s:
+        real += _round_card(lab, sorted(s))
+if actual["champion"]:
+    real += _round_card("Şampiyon", [actual["champion"]], accent="champ")
+if real:
+    st.markdown(real, unsafe_allow_html=True)

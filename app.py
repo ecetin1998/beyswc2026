@@ -369,6 +369,8 @@ header[data-testid="stHeader"]{background:transparent;}
 .matchup .mt.reached{color:#c7ecd4; font-weight:600;}
 .matchup .vs{color:var(--mut); font-size:10px;}
 .matchup.pairhit{border-color:var(--grp); background:rgba(69,179,107,.14);}
+.matchup .mt.win{color:#c7ecd4; font-weight:700;}
+.matchup .mt.lose{opacity:.4;}
 .kround.champ{border-color:rgba(245,196,81,.5); background:linear-gradient(180deg, rgba(245,196,81,.10), var(--panel));}
 .kround.champ .krhead{color:var(--gold);}
 .kround.champ .tchip{border-color:var(--gold); color:var(--gold); font-weight:600;}
@@ -500,6 +502,20 @@ def _pair_card(title, teams, reached=None, pairset=None):
             f'<div class="kteams pairs">{units}</div></div>')
 
 
+def _result_pairs_card(title, pairs, winners):
+    """Gerçek knockout maçları: kazanan yeşil, elenen sönük."""
+    units = ""
+    for pr in sorted(pairs, key=lambda p: sorted(p)):
+        a, b = tuple(pr)
+        ca = "win" if a in winners else "lose"
+        cb = "win" if b in winners else "lose"
+        units += (f'<div class="matchup"><span class="mt {ca}">{a}</span>'
+                  f'<span class="vs">–</span><span class="mt {cb}">{b}</span></div>')
+    return (f'<div class="kround"><div class="krhead">{title}'
+            f'<span class="krcnt">{len(pairs)} maç</span></div>'
+            f'<div class="kteams pairs">{units}</div></div>')
+
+
 def player_predictions_html(pp, actual):
     pb3 = set(ordered(pp, "En Iyi 3.ler"))     # oyuncunun en iyi 3. tahminleri
     cards = ""
@@ -598,17 +614,23 @@ st.markdown(player_predictions_html(preds[who], actual), unsafe_allow_html=True)
 
 st.markdown('<div class="sec-title">Gerçek Sonuçlar</div>', unsafe_allow_html=True)
 st.caption("Grup sırası: puan → ikili maç → genel averaj → genel gol → FIFA. "
-           "Yeşil = ilk 2, mavi = en iyi 3. (tur atlar), sönük = elenen.")
+           "Yeşil = ilk 2, mavi = en iyi 3. (tur atlar), sönük = elenen. "
+           "Knockout maçlarında kazanan yeşil, elenen sönük.")
 st.markdown(groups_html(actual), unsafe_allow_html=True)
 
 real = ""
 if actual["best_third"]:
     real += _round_card("En İyi 3.ler (ilk 8)", sorted(actual["best_third"]))
-for key, lab in [("Son 16", "Son 16"), ("Ceyrek Final", "Çeyrek"),
-                 ("Yari Final", "Yarı"), ("Final", "Final")]:
-    s = actual["round_set"].get(key)
-    if s:
-        real += _round_card(lab, sorted(s))
+for lab, pkey, nextkey in [("Son 32", "Son 32", "Son 16"),
+                           ("Son 16", "Son 16", "Ceyrek Final"),
+                           ("Çeyrek", "Ceyrek Final", "Yari Final"),
+                           ("Yarı", "Yari Final", "Final"),
+                           ("Final", "Final", None)]:
+    pairs = actual["pair_set"].get(pkey)
+    if pairs:
+        winners = ({actual["champion"]} if nextkey is None
+                   else actual["round_set"].get(nextkey, set()))
+        real += _result_pairs_card(lab, pairs, winners)
 if actual["champion"]:
     real += _round_card("Şampiyon", [actual["champion"]], accent="champ")
 if real:

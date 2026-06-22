@@ -332,6 +332,8 @@ header[data-testid="stHeader"]{background:transparent;}
 .chip.grp{border-color:rgba(69,179,107,.45);} .chip.b3{border-color:rgba(76,141,214,.45);} .chip.kw{border-color:rgba(155,109,214,.45);} .chip.kp{border-color:rgba(230,162,60,.45);}
 .row .pts{font-family:'Space Grotesk',monospace; font-weight:700; font-size:22px;}
 .row .pts span{font-size:11px; color:var(--mut); font-weight:500;}
+.row.last{border-color:rgba(229,72,77,.5); background:linear-gradient(180deg, rgba(229,72,77,.11), var(--panel));}
+.row.last .pos, .row.last .pts{color:var(--red);}
 .ggrid{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px;}
 .gcard{background:var(--panel); border:1px solid var(--line); border-radius:12px; overflow:hidden;}
 .ghead{font-family:'Anton',sans-serif; letter-spacing:.5px; font-size:14px; padding:8px 12px; background:var(--panel2);}
@@ -401,8 +403,10 @@ def podium_html(top):
 
 def board_html(rest, start):
     items = ""
+    n = len(rest)
     for i, r in enumerate(rest):
-        items += (f'<div class="row"><div class="pos">{start + i}</div>'
+        cls = "row last" if i == n - 1 else "row"
+        items += (f'<div class="{cls}"><div class="pos">{start + i}</div>'
                   f'<div class="info"><div class="name">{r["Oyuncu"]}</div>'
                   f'{_bar(r)}{_chips(r)}</div>'
                   f'<div class="pts">{r["Toplam"]}<span>/1000</span></div></div>')

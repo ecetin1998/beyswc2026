@@ -349,7 +349,7 @@ header[data-testid="stHeader"]{background:transparent;}
 .tiprow b{color:var(--mut); margin-right:5px;}
 .grow .gp{width:18px; height:18px; border-radius:5px; font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center; color:#0B1220; background:var(--mut);}
 .grow.q .gp{background:var(--grp); color:#08130c;} .grow.t3 .gp{background:var(--b3); color:#06121f;}
-.grow.out{opacity:.42;}
+.grow.out .gp, .grow.out .tn{opacity:.42;}
 .chiprow{display:flex; flex-wrap:wrap; gap:7px; align-items:center; margin:8px 0 2px;}
 .chiprow b{font-family:'Inter',sans-serif; font-size:12px; color:var(--mut);}
 .tchip{font-family:'Inter',sans-serif; font-size:12px; background:var(--panel); border:1px solid var(--line); border-radius:999px; padding:4px 10px;}
@@ -440,7 +440,7 @@ def _who_tip(preds, g, team):
     for poz in (1, 2, 3, 4):
         names = ", ".join(by_pos[poz]) if by_pos[poz] else "—"
         rows += f'<div class="tiprow"><b>{poz}.</b>{names}</div>'
-    return f'<div class="tip"><div class="tiptitle">{team} · kim nereye yazmış</div>{rows}</div>'
+    return f'<div class="tip"><div class="tiptitle">{team}</div>{rows}</div>'
 
 
 def groups_html(actual, preds):

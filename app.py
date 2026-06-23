@@ -339,9 +339,14 @@ header[data-testid="stHeader"]{background:transparent;}
 .row.last{border-color:rgba(229,72,77,.5); background:linear-gradient(180deg, rgba(229,72,77,.11), var(--panel));}
 .row.last .pos, .row.last .pts{color:var(--red);}
 .ggrid{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px;}
-.gcard{background:var(--panel); border:1px solid var(--line); border-radius:12px; overflow:hidden;}
-.ghead{font-family:'Anton',sans-serif; letter-spacing:.5px; font-size:14px; padding:8px 12px; background:var(--panel2);}
-.grow{display:flex; align-items:center; gap:8px; padding:6px 12px; font-family:'Inter',sans-serif; font-size:13px; border-top:1px solid var(--line);}
+.gcard{background:var(--panel); border:1px solid var(--line); border-radius:12px; overflow:visible;}
+.ghead{font-family:'Anton',sans-serif; letter-spacing:.5px; font-size:14px; padding:8px 12px; background:var(--panel2); border-radius:11px 11px 0 0;}
+.grow{position:relative; display:flex; align-items:center; gap:8px; padding:6px 12px; font-family:'Inter',sans-serif; font-size:13px; border-top:1px solid var(--line); cursor:default;}
+.tip{display:none; position:absolute; z-index:40; top:calc(100% - 2px); left:8px; right:8px; background:#0e1830; border:1px solid var(--line); border-radius:10px; padding:9px 11px; box-shadow:0 12px 30px rgba(0,0,0,.55);}
+.grow:hover .tip, .grow:focus-within .tip{display:block;}
+.tiptitle{font-family:'Inter',sans-serif; font-weight:700; font-size:12px; margin-bottom:5px; color:var(--gold);}
+.tiprow{font-family:'Inter',sans-serif; font-size:11.5px; line-height:1.55; color:var(--tx);}
+.tiprow b{color:var(--mut); margin-right:5px;}
 .grow .gp{width:18px; height:18px; border-radius:5px; font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center; color:#0B1220; background:var(--mut);}
 .grow.q .gp{background:var(--grp); color:#08130c;} .grow.t3 .gp{background:var(--b3); color:#06121f;}
 .grow.out{opacity:.42;}
@@ -425,7 +430,20 @@ def board_html(rest, start):
     return f'<div class="board">{items}</div>'
 
 
-def groups_html(actual):
+def _who_tip(preds, g, team):
+    by_pos = {1: [], 2: [], 3: [], 4: []}
+    for p in C.PLAYERS:
+        for poz in (1, 2, 3, 4):
+            if preds[p][g].get(poz) == team:
+                by_pos[poz].append(p)
+    rows = ""
+    for poz in (1, 2, 3, 4):
+        names = ", ".join(by_pos[poz]) if by_pos[poz] else "—"
+        rows += f'<div class="tiprow"><b>{poz}.</b>{names}</div>'
+    return f'<div class="tip"><div class="tiptitle">{team} · kim nereye yazmış</div>{rows}</div>'
+
+
+def groups_html(actual, preds):
     bt = actual["best_third"]
     cards = ""
     for g in GROUPS:
@@ -438,8 +456,10 @@ def groups_html(actual):
                 adv = "t3" if t in bt else "out"
             else:
                 adv = "out"
-            grows += (f'<div class="grow {adv}"><span class="gp">{poz}</span>'
-                      f'<span class="tn">{t}</span></div>')
+            tip = _who_tip(preds, g, t) if t != "—" else ""
+            tab = ' tabindex="0"' if tip else ""
+            grows += (f'<div class="grow {adv}"{tab}><span class="gp">{poz}</span>'
+                      f'<span class="tn">{t}</span>{tip}</div>')
         cards += f'<div class="gcard"><div class="ghead">{g}</div>{grows}</div>'
     return f'<div class="ggrid">{cards}</div>'
 
@@ -618,7 +638,7 @@ st.markdown('<div class="sec-title">Gerçek Sonuçlar</div>', unsafe_allow_html=
 st.caption("Grup sırası: puan → ikili maç → genel averaj → genel gol → FIFA. "
            "Yeşil = ilk 2, mavi = en iyi 3. (tur atlar), sönük = elenen. "
            "Knockout maçlarında kazanan yeşil, elenen sönük.")
-st.markdown(groups_html(actual), unsafe_allow_html=True)
+st.markdown(groups_html(actual, preds), unsafe_allow_html=True)
 
 real = ""
 if actual["best_third"]:

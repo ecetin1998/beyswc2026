@@ -347,6 +347,12 @@ header[data-testid="stHeader"]{background:transparent;}
 .tiptitle{font-family:'Inter',sans-serif; font-weight:700; font-size:12px; margin-bottom:5px; color:var(--gold);}
 .tiprow{font-family:'Inter',sans-serif; font-size:11.5px; line-height:1.55; color:var(--tx);}
 .tiprow b{color:var(--mut); margin-right:5px;}
+.grrow{display:flex; justify-content:space-between; gap:8px; padding:5px 12px; border-top:1px solid var(--line); font-family:'Inter',sans-serif; font-size:12.5px;}
+.grrow span{color:var(--tx);}
+.grrow b{font-family:'Space Grotesk',monospace; color:var(--mut);}
+.grrow.lead{background:rgba(245,196,81,.10);}
+.grrow.lead span{color:var(--gold); font-weight:700;}
+.grrow.lead b{color:var(--gold);}
 .grow .gp{width:18px; height:18px; border-radius:5px; font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center; color:#0B1220; background:var(--mut);}
 .grow.q .gp{background:var(--grp); color:#08130c;} .grow.t3 .gp{background:var(--b3); color:#06121f;}
 .grow.out .gp, .grow.out .tn{opacity:.42;}
@@ -538,6 +544,35 @@ def _result_pairs_card(title, pairs, winners):
             f'<div class="kteams pairs">{units}</div></div>')
 
 
+def group_points(pp, g, actual):
+    """Bir oyuncunun tek bir gruptan aldığı puan (maks 30)."""
+    pts, exact = 0, True
+    have_all = all((g, poz) in actual["group"] for poz in (1, 2, 3, 4))
+    for poz in (1, 2, 3, 4):
+        real = actual["group"].get((g, poz))
+        if real is not None and pp[g].get(poz) == real:
+            pts += C.GROUP_POINTS[poz]
+        else:
+            exact = False
+    if have_all and exact:
+        pts += C.GROUP_EXACT_BONUS
+    return pts
+
+
+def groups_rank_html(preds, actual):
+    cards = ""
+    for g in GROUPS:
+        ranked = sorted(((p, group_points(preds[p], g, actual)) for p in C.PLAYERS),
+                        key=lambda x: x[1], reverse=True)
+        lead = ranked[0][1]
+        rows = ""
+        for p, pt in ranked:
+            cls = " lead" if (pt == lead and pt > 0) else ""
+            rows += f'<div class="grrow{cls}"><span>{p}</span><b>{pt}</b></div>'
+        cards += f'<div class="gcard"><div class="ghead">{g}</div><div class="grank">{rows}</div></div>'
+    return f'<div class="ggrid">{cards}</div>'
+
+
 def player_predictions_html(pp, actual):
     pb3 = set(ordered(pp, "En Iyi 3.ler"))     # oyuncunun en iyi 3. tahminleri
     cards = ""
@@ -625,6 +660,11 @@ if err:
     st.error(f"Veri hatası: {err}")
 
 st.markdown(podium_html(rows[:3]) + board_html(rows[3:], 4), unsafe_allow_html=True)
+
+with st.expander("🔢 Grup bazında puanlar · her grubun kralı"):
+    st.caption("Her grupta kim kaç puan topladı (maks 30: 10+8+5+1 + 6 tam sıra bonusu). "
+               "Altın = o grubun lideri.")
+    st.markdown(groups_rank_html(preds, actual), unsafe_allow_html=True)
 
 st.markdown('<div class="sec-title">Tahminler</div>', unsafe_allow_html=True)
 who = st.selectbox("Kimin tahminleri?", C.PLAYERS,

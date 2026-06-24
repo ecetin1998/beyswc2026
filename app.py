@@ -328,7 +328,7 @@ header[data-testid="stHeader"]{background:transparent;}
 .pod .chips{justify-content:center;}
 .board{display:flex; flex-direction:column; gap:8px; margin-top:12px;}
 .row{display:flex; align-items:center; gap:12px; background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:10px 14px;}
-.row .pos{font-family:'Space Grotesk',monospace; font-weight:700; color:var(--mut); width:22px; text-align:center; font-size:15px;}
+.row .pos{font-family:'Space Grotesk',monospace; font-weight:700; color:var(--mut); width:26px; text-align:center; font-size:16px;}
 .row .info{flex:1; min-width:0;}
 .row .name{font-family:'Inter',sans-serif; font-weight:600; font-size:14px;}
 .chips{display:flex; gap:6px; flex-wrap:wrap; margin-top:7px;}
@@ -337,6 +337,8 @@ header[data-testid="stHeader"]{background:transparent;}
 .row .pts{font-family:'Space Grotesk',monospace; font-weight:700; font-size:22px;}
 .row .pts span{font-size:11px; color:var(--mut); font-weight:500;}
 .row.last{border-color:rgba(229,72,77,.5); background:linear-gradient(180deg, rgba(229,72,77,.11), var(--panel));}
+.row.first{border-color:rgba(245,196,81,.55); background:linear-gradient(180deg, rgba(245,196,81,.13), var(--panel)); box-shadow:0 0 26px rgba(245,196,81,.12);}
+.row.first .pts{color:var(--gold);}
 .row.last .pos, .row.last .pts{color:var(--red);}
 .ggrid{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px;}
 .gcard{background:var(--panel); border:1px solid var(--line); border-radius:12px; overflow:visible;}
@@ -410,26 +412,15 @@ def _chips(r):
             f'<span class="chip kp">Pair {r["KO Pair"]}</span></div>')
 
 
-def podium_html(top):
-    medal = {0: "🥇", 1: "🥈", 2: "🥉"}
-    place = {0: "first", 1: "second", 2: "third"}
-    cards = ""
-    for idx in (1, 0, 2):
-        if idx >= len(top):
-            continue
-        r = top[idx]
-        cards += (f'<div class="pod {place[idx]}"><div class="medal">{medal[idx]}</div>'
-                  f'<div class="pod-name">{r["Oyuncu"]}</div>'
-                  f'<div class="pod-pts">{r["Toplam"]}</div>{_bar(r)}{_chips(r)}</div>')
-    return f'<div class="podium">{cards}</div>'
-
-
-def board_html(rest, start):
+def board_html(rows):
+    medals = {1: "🥇", 2: "🥈", 3: "🥉"}
+    n = len(rows)
     items = ""
-    n = len(rest)
-    for i, r in enumerate(rest):
-        cls = "row last" if i == n - 1 else "row"
-        items += (f'<div class="{cls}"><div class="pos">{start + i}</div>'
+    for i, r in enumerate(rows):
+        rank = i + 1
+        cls = "row" + (" first" if rank == 1 else (" last" if rank == n else ""))
+        pos = medals.get(rank, str(rank))
+        items += (f'<div class="{cls}"><div class="pos">{pos}</div>'
                   f'<div class="info"><div class="name">{r["Oyuncu"]}</div>'
                   f'{_bar(r)}{_chips(r)}</div>'
                   f'<div class="pts">{r["Toplam"]}<span>/1000</span></div></div>')
@@ -659,7 +650,7 @@ with st.expander("📋 Puanlama nasıl hesaplanıyor? · maks 1000 puan"):
 if err:
     st.error(f"Veri hatası: {err}")
 
-st.markdown(podium_html(rows[:3]) + board_html(rows[3:], 4), unsafe_allow_html=True)
+st.markdown(board_html(rows), unsafe_allow_html=True)
 
 with st.expander("🔢 Grup bazında puanlar · her grubun kralı"):
     st.caption("Her grupta kim kaç puan topladı (maks 30: 10+8+5+1 + 6 tam sıra bonusu). "

@@ -383,6 +383,7 @@ header[data-testid="stHeader"]{background:transparent;}
 .matchup .mt.no{color:#c97b7e; font-weight:400;}
 .matchup .vs{color:var(--mut); font-size:10px;}
 .matchup.pairhit{border-color:var(--grp); background:rgba(69,179,107,.14);}
+.matchup.pairmiss{border-color:rgba(229,72,77,.5); background:rgba(229,72,77,.10);}
 .matchup .mt.win{color:#58e08e; font-weight:700;}
 .matchup .mt.lose{opacity:.4;}
 .kround.champ{border-color:rgba(245,196,81,.5); background:linear-gradient(180deg, rgba(245,196,81,.10), var(--panel));}
@@ -505,16 +506,23 @@ def _round_card(title, teams, actual_set=None, accent=""):
 
 
 def _pair_card(title, teams, reached=None, pairset=None):
-    """Komşu ikilileri eşleşme (matchup) kutusu olarak göster.
-    Tur belli olduysa: ulaşan takım yeşil, ulaşamayan kırmızı · kutu yeşil = eşleşme tuttu."""
+    """Komşu ikilileri eşleşme kutusu olarak göster.
+    İsim: ulaşan yeşil, ulaşamayan kırmızı (tur belliyse).
+    Kutu: eşleşme doğru yeşil · gerçek rakip belli ama yanlış eşleştirilmiş kırmızı · belirsiz nötr."""
     decided = bool(reached)
+    matched = set().union(*pairset) if pairset else set()   # gerçek rakibi belli olan takımlar
     units = ""
     for i in range(0, len(teams) - 1, 2):
         a, b = teams[i], teams[i + 1]
-        ph = "pairhit" if (pairset and frozenset({a, b}) in pairset) else ""
+        if pairset and frozenset({a, b}) in pairset:
+            box = "pairhit"
+        elif a in matched or b in matched:
+            box = "pairmiss"
+        else:
+            box = ""
         ca = ("ok" if a in reached else "no") if decided else ""
         cb = ("ok" if b in reached else "no") if decided else ""
-        units += (f'<div class="matchup {ph}"><span class="mt {ca}">{a}</span>'
+        units += (f'<div class="matchup {box}"><span class="mt {ca}">{a}</span>'
                   f'<span class="vs">–</span><span class="mt {cb}">{b}</span></div>')
     return (f'<div class="kround"><div class="krhead">{title}'
             f'<span class="krcnt">{len(teams) // 2} eşleşme</span></div>'
@@ -661,8 +669,8 @@ st.markdown('<div class="sec-title">Tahminler</div>', unsafe_allow_html=True)
 who = st.selectbox("Kimin tahminleri?", C.PLAYERS,
                    index=C.PLAYERS.index(rows[0]["Oyuncu"]))
 st.caption("Gruplar — rozet: yeşil ilk 2, mavi en iyi 3., sönük elenen · isim: yeşil doğru, "
-           "kırmızı yanlış sıra.  Eşleşmeler: takım yeşil = o tura ulaştı, kırmızı = ulaşamadı, "
-           "kutu yeşil = ikili birebir tuttu.")
+           "kırmızı yanlış sıra.  Eşleşmeler: takım yeşil = o tura ulaştı, kırmızı = ulaşamadı; "
+           "kutu yeşil = eşleşme doğru, kutu kırmızı = gerçek rakip belli ama eşleşme yanlış.")
 st.markdown(player_predictions_html(preds[who], actual), unsafe_allow_html=True)
 
 st.markdown('<div class="sec-title">Gerçek Sonuçlar</div>', unsafe_allow_html=True)

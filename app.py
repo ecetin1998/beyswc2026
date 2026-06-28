@@ -234,9 +234,22 @@ def build_actuals(matches):
         w = ko_winner(m)
         if w:
             actual["champion"] = w
+    # --- openfootball knockout placeholder çözümü ---
+    # openfootball R32'yi geç dolduruyor; placeholder'ları kendimiz çözeriz:
+    #   "1I"/"2C" = grup pozisyonu -> kendi standings'imizden (grup bitti, kesin)
+    #   "3A/B/C/D/F" = en iyi 3. slotu -> config.R32_THIRD_SLOT (resmi bracket köprüsü)
+    # Kaynak gerçek ismi yazınca placeholder kalmaz, resolve otomatik onu kullanır.
+    def resolve(name):
+        t = (name or "").strip()
+        if t in C.R32_THIRD_SLOT:
+            return C.R32_THIRD_SLOT[t]
+        if len(t) in (2, 3) and t[0] in "12" and "/" not in t:
+            return actual["group"].get(("Grup " + t[1:], int(t[0])))
+        return C.to_tr_token(t)
+
     for rnd in C.KO_PAIR_POINTS:
         for m in by_round.get(rnd, []):
-            h, a = C.to_tr_token(m["team1"]), C.to_tr_token(m["team2"])
+            h, a = resolve(m["team1"]), resolve(m["team2"])
             if h and a:
                 actual["pair_set"][rnd].add(frozenset({h, a}))
     return actual

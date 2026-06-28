@@ -357,6 +357,9 @@ header[data-testid="stHeader"]{background:transparent;}
 .gcard{background:var(--panel); border:1px solid var(--line); border-radius:12px; overflow:visible;}
 .ghead{position:relative; display:flex; justify-content:space-between; align-items:center; font-family:'Anton',sans-serif; letter-spacing:.5px; font-size:14px; padding:8px 12px; background:var(--panel2); border-radius:11px 11px 0 0; cursor:pointer;}
 .ghint{font-family:'Inter',sans-serif; font-size:12px; color:var(--mut); font-weight:600;}
+.ghead.pred{cursor:default;}
+.ghpts{font-family:'Space Grotesk',monospace; font-size:13px; font-weight:700; color:var(--gold);}
+.ghpts i{font-size:10px; font-style:normal; font-weight:500; color:var(--mut);}
 .grow{position:relative; display:flex; align-items:center; gap:8px; padding:6px 12px; font-family:'Inter',sans-serif; font-size:13px; border-top:1px solid var(--line); cursor:default;}
 .tip{display:none; position:absolute; z-index:40; top:calc(100% - 2px); left:8px; right:8px; background:#0e1830; border:1px solid var(--line); border-radius:10px; padding:9px 11px; box-shadow:0 12px 30px rgba(0,0,0,.55);}
 .grow:hover .tip, .grow:focus-within .tip, .ghead:hover .tip, .ghead:focus-within .tip{display:block;}
@@ -622,7 +625,10 @@ def player_predictions_html(pp, actual):
                 corr = "hit" if pick == real else ("near" if pick in agset else "")
             grows += (f'<div class="grow {adv}"><span class="gp">{poz}</span>'
                       f'<span class="tn {corr}">{pick}</span></div>')
-        cards += f'<div class="gcard"><div class="ghead">{g}</div>{grows}</div>'
+        gpts = group_points(pp, g, actual)
+        head = (f'<div class="ghead pred">{g}'
+                f'<span class="ghpts">{gpts}<i>/30</i></span></div>')
+        cards += f'<div class="gcard">{head}{grows}</div>'
     html = f'<div class="ggrid">{cards}</div>'
     html += _round_card("En İyi 3.ler", ordered(pp, "En Iyi 3.ler"), actual["best_third"])
     html += _pair_card("Son 32", ordered(pp, "Son 32"), actual.get("r32_set", set()),
@@ -688,8 +694,14 @@ if err:
 st.markdown(board_html(rows), unsafe_allow_html=True)
 
 st.markdown('<div class="sec-title">Tahminler</div>', unsafe_allow_html=True)
-who = st.selectbox("Kimin tahminleri?", C.PLAYERS,
-                   index=C.PLAYERS.index(rows[0]["Oyuncu"]))
+try:
+    who = st.pills("Kimin tahminleri?", C.PLAYERS, selection_mode="single",
+                   default=rows[0]["Oyuncu"], label_visibility="collapsed")
+except AttributeError:                       # eski Streamlit -> dropdown'a düş
+    who = st.selectbox("Kimin tahminleri?", C.PLAYERS,
+                       index=C.PLAYERS.index(rows[0]["Oyuncu"]))
+if not who:                                  # hiçbiri seçili değilse lideri göster
+    who = rows[0]["Oyuncu"]
 st.caption("Gruplar — rozet: yeşil ilk 2, mavi en iyi 3., sönük elenen · isim: yeşil doğru, "
            "kırmızı yanlış sıra.  Eşleşmeler: takım yeşil = o tura ulaştı, kırmızı = ulaşamadı; "
            "kutu yeşil = eşleşme doğru, kutu kırmızı = gerçek rakip belli ama eşleşme yanlış.")

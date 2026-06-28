@@ -355,10 +355,11 @@ header[data-testid="stHeader"]{background:transparent;}
 .row.last .pos, .row.last .pts{color:var(--red);}
 .ggrid{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px;}
 .gcard{background:var(--panel); border:1px solid var(--line); border-radius:12px; overflow:visible;}
-.ghead{font-family:'Anton',sans-serif; letter-spacing:.5px; font-size:14px; padding:8px 12px; background:var(--panel2); border-radius:11px 11px 0 0;}
+.ghead{position:relative; display:flex; justify-content:space-between; align-items:center; font-family:'Anton',sans-serif; letter-spacing:.5px; font-size:14px; padding:8px 12px; background:var(--panel2); border-radius:11px 11px 0 0; cursor:pointer;}
+.ghint{font-family:'Inter',sans-serif; font-size:12px; color:var(--mut); font-weight:600;}
 .grow{position:relative; display:flex; align-items:center; gap:8px; padding:6px 12px; font-family:'Inter',sans-serif; font-size:13px; border-top:1px solid var(--line); cursor:default;}
 .tip{display:none; position:absolute; z-index:40; top:calc(100% - 2px); left:8px; right:8px; background:#0e1830; border:1px solid var(--line); border-radius:10px; padding:9px 11px; box-shadow:0 12px 30px rgba(0,0,0,.55);}
-.grow:hover .tip, .grow:focus-within .tip{display:block;}
+.grow:hover .tip, .grow:focus-within .tip, .ghead:hover .tip, .ghead:focus-within .tip{display:block;}
 .tiptitle{font-family:'Inter',sans-serif; font-weight:700; font-size:12px; margin-bottom:5px; color:var(--gold);}
 .tiprow{font-family:'Inter',sans-serif; font-size:11.5px; line-height:1.55; color:var(--tx);}
 .tiprow b{color:var(--mut); margin-right:5px;}
@@ -454,6 +455,17 @@ def _who_tip(preds, g, team):
     return f'<div class="tip"><div class="tiptitle">{team}</div>{rows}</div>'
 
 
+def _group_rank_tip(preds, g, actual):
+    ranked = sorted(((p, group_points(preds[p], g, actual)) for p in C.PLAYERS),
+                    key=lambda x: x[1], reverse=True)
+    lead = ranked[0][1]
+    rows = ""
+    for p, pt in ranked:
+        cls = " lead" if (pt == lead and pt > 0) else ""
+        rows += f'<div class="grrow{cls}"><span>{p}</span><b>{pt}</b></div>'
+    return f'<div class="tip"><div class="tiptitle">{g} · puanlar</div>{rows}</div>'
+
+
 def groups_html(actual, preds):
     bt = actual["best_third"]
     cards = ""
@@ -471,7 +483,9 @@ def groups_html(actual, preds):
             tab = ' tabindex="0"' if tip else ""
             grows += (f'<div class="grow {adv}"{tab}><span class="gp">{poz}</span>'
                       f'<span class="tn">{t}</span>{tip}</div>')
-        cards += f'<div class="gcard"><div class="ghead">{g}</div>{grows}</div>'
+        head = (f'<div class="ghead" tabindex="0">{g}<span class="ghint">▾</span>'
+                f'{_group_rank_tip(preds, g, actual)}</div>')
+        cards += f'<div class="gcard">{head}{grows}</div>'
     return f'<div class="ggrid">{cards}</div>'
 
 
@@ -673,11 +687,6 @@ if err:
 
 st.markdown(board_html(rows), unsafe_allow_html=True)
 
-with st.expander("🔢 Grup bazında puanlar · her grubun kralı"):
-    st.caption("Her grupta kim kaç puan topladı (maks 30: 10+8+5+1 + 6 tam sıra bonusu). "
-               "Altın = o grubun lideri.")
-    st.markdown(groups_rank_html(preds, actual), unsafe_allow_html=True)
-
 st.markdown('<div class="sec-title">Tahminler</div>', unsafe_allow_html=True)
 who = st.selectbox("Kimin tahminleri?", C.PLAYERS,
                    index=C.PLAYERS.index(rows[0]["Oyuncu"]))
@@ -689,7 +698,8 @@ st.markdown(player_predictions_html(preds[who], actual), unsafe_allow_html=True)
 st.markdown('<div class="sec-title">Gerçek Sonuçlar</div>', unsafe_allow_html=True)
 st.caption("Grup sırası: puan → ikili maç → genel averaj → genel gol → FIFA. "
            "Yeşil = ilk 2, mavi = en iyi 3. (tur atlar), sönük = elenen. "
-           "Knockout maçlarında kazanan yeşil, elenen sönük.")
+           "Knockout maçlarında kazanan yeşil, elenen sönük. "
+           "💡 Takıma gel/dokun = kim nereye yazmış · grup başlığına (▾) gel = grup puanları.")
 st.markdown(groups_html(actual, preds), unsafe_allow_html=True)
 
 real = ""

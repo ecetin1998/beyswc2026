@@ -344,8 +344,6 @@ header[data-testid="stHeader"]{background:transparent;}
 .row .pos{font-family:'Space Grotesk',monospace; font-weight:700; color:var(--mut); width:26px; text-align:center; font-size:16px;}
 .row .info{flex:1; min-width:0;}
 .row .name{font-family:'Inter',sans-serif; font-weight:600; font-size:14px;}
-.namelink{color:inherit; text-decoration:none; cursor:pointer;}
-.namelink:hover{color:var(--gold); text-decoration:underline;}
 .chips{display:flex; gap:6px; flex-wrap:wrap; margin-top:7px;}
 .chip{font-family:'Inter',sans-serif; font-size:10.5px; color:var(--mut); border:1px solid var(--line); border-radius:999px; padding:2px 8px;}
 .chip.grp{border-color:rgba(69,179,107,.45);} .chip.b3{border-color:rgba(76,141,214,.45);} .chip.kw{border-color:rgba(155,109,214,.45);} .chip.kp{border-color:rgba(230,162,60,.45);}
@@ -437,9 +435,7 @@ def board_html(rows):
         cls = "row" + (" first" if rank == 1 else (" last" if rank == n else ""))
         pos = medals.get(rank, str(rank))
         items += (f'<div class="{cls}"><div class="pos">{pos}</div>'
-                  f'<div class="info"><div class="name">'
-                  f'<a class="namelink" href="?p={r["Oyuncu"]}#tahminler" target="_self">'
-                  f'{r["Oyuncu"]}</a></div>'
+                  f'<div class="info"><div class="name">{r["Oyuncu"]}</div>'
                   f'{_bar(r)}{_chips(r)}</div>'
                   f'<div class="pts">{r["Toplam"]}<span>/1000</span></div></div>')
     return f'<div class="board">{items}</div>'
@@ -682,15 +678,9 @@ with st.expander("🔢 Grup bazında puanlar · her grubun kralı"):
                "Altın = o grubun lideri.")
     st.markdown(groups_rank_html(preds, actual), unsafe_allow_html=True)
 
-st.markdown('<div class="sec-title" id="tahminler">Tahminler</div>', unsafe_allow_html=True)
-# Sıralamadaki isme tıklayınca ?p=<oyuncu> gelir -> o oyuncuyu seç (değiştiğinde bir kez uygula)
-_qp = st.query_params.get("p")
-if _qp in C.PLAYERS and st.session_state.get("_last_p") != _qp:
-    st.session_state["who_sel"] = _qp
-    st.session_state["_last_p"] = _qp
-if "who_sel" not in st.session_state:
-    st.session_state["who_sel"] = rows[0]["Oyuncu"]      # varsayılan: lider
-who = st.selectbox("Kimin tahminleri?", C.PLAYERS, key="who_sel")
+st.markdown('<div class="sec-title">Tahminler</div>', unsafe_allow_html=True)
+who = st.selectbox("Kimin tahminleri?", C.PLAYERS,
+                   index=C.PLAYERS.index(rows[0]["Oyuncu"]))
 st.caption("Gruplar — rozet: yeşil ilk 2, mavi en iyi 3., sönük elenen · isim: yeşil doğru, "
            "kırmızı yanlış sıra.  Eşleşmeler: takım yeşil = o tura ulaştı, kırmızı = ulaşamadı; "
            "kutu yeşil = eşleşme doğru, kutu kırmızı = gerçek rakip belli ama eşleşme yanlış.")

@@ -141,3 +141,21 @@ FIFA_RANK = {
     "suudi arabistan": 61, "ürdün": 63, "bosna": 64, "yeşil burun": 67, "gana": 73,
     "curaçao": 82, "haiti": 83, "yeni zelanda": 85,
 }
+
+
+# ----------------------------------------------------------------------------
+# Bu turnuvada kesinleşen "en iyi 3." R32 slot atamaları (resmi bracket).
+# openfootball bu slotları geç doldurduğu için köprü; kaynak gerçek ismi
+# koyunca resolve() otomatik onu kullanır, burası devre dışı kalır.
+# Slot kodu (openfootball placeholder) -> takım (türkçe token)
+# ----------------------------------------------------------------------------
+R32_THIRD_SLOT = {
+    "3A/B/C/D/F": "paraguay",
+    "3C/D/F/G/H": "isveç",
+    "3C/E/F/H/I": "ekvador",
+    "3E/H/I/J/K": "kongo",
+    "3B/E/F/I/J": "bosna",
+    "3A/E/H/I/J": "senegal",
+    "3E/F/G/I/J": "cezayir",
+    "3D/E/I/J/L": "gana",
+}

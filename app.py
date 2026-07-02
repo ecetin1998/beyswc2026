@@ -511,7 +511,7 @@ def board_html(rows):
                   f'<div class="info"><div class="name">{r["Oyuncu"]}</div>'
                   f'{_bar(r)}{_chips(r)}</div>'
                   f'<div class="pts">{r["Toplam"]}<span>/1000</span>'
-                  f'<em>tavan {r["Maks"]}</em></div></div>')
+                  f'<em>max puan {r["Maks"]}</em></div></div>')
     return f'<div class="board">{items}</div>'
 
 

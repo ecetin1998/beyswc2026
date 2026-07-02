@@ -343,6 +343,33 @@ def score_player(pp, actual):
             "KO Pair": ko_p, "Toplam": grp + b3 + ko_w + ko_p}
 
 
+def max_points(pp, actual):
+    """Buradan sonra her şey oyuncunun dediği gibi giderse alabileceği tavan puan.
+    Grup + en iyi 3. kilitli; KO'da yalnızca HAYATTA olan tahminler sayılır (elenen tavanı düşürür)."""
+    cur = score_player(pp, actual)
+    grp, b3 = cur["Grup"], cur["En İyi 3"]
+    allt = actual["round_settled"].get("Son 32", set())      # tüm grup takımları (gruplar bitti)
+    r32 = actual.get("r32_set", set())
+    elim = allt - r32                                        # gruptan elenenler
+    for k in ("Son 16", "Ceyrek Final", "Yari Final", "Final"):
+        elim |= actual["round_settled"].get(k, set()) - actual["round_set"].get(k, set())
+    alive = (allt - elim) if allt else set()
+    ko_w = 0
+    for rnd, pts in C.KO_WINNER_POINTS.items():
+        if rnd == "Sampiyon":
+            continue
+        ko_w += len(set(ordered(pp, rnd)) & alive) * pts
+    champ = pp.get("Sampiyon", {}).get(1)
+    if champ and champ in alive:
+        ko_w += C.KO_WINNER_POINTS["Sampiyon"] + C.CHAMPION_BONUS
+    ko_p = 0
+    for rnd, pts in C.KO_PAIR_POINTS.items():
+        for pr in pairs_from(pp, rnd):
+            if pr <= alive:                                 # iki takım da hayatta
+                ko_p += pts
+    return grp + b3 + ko_w + ko_p
+
+
 # ---------------------------------------------------------------------------
 # Arayüz
 # ---------------------------------------------------------------------------
@@ -390,6 +417,7 @@ header[data-testid="stHeader"]{background:transparent;}
 .chip.grp{border-color:rgba(69,179,107,.45);} .chip.b3{border-color:rgba(76,141,214,.45);} .chip.kw{border-color:rgba(155,109,214,.45);} .chip.kp{border-color:rgba(230,162,60,.45);}
 .row .pts{font-family:'Space Grotesk',monospace; font-weight:700; font-size:22px;}
 .row .pts span{font-size:11px; color:var(--mut); font-weight:500;}
+.row .pts em{display:block; font-style:normal; font-size:10px; font-weight:500; color:var(--mut); margin-top:1px;}
 .row.last{border-color:rgba(229,72,77,.5); background:linear-gradient(180deg, rgba(229,72,77,.11), var(--panel));}
 .row.first{border-color:rgba(245,196,81,.55); background:linear-gradient(180deg, rgba(245,196,81,.13), var(--panel)); box-shadow:0 0 26px rgba(245,196,81,.12);}
 .row.first .pts{color:var(--gold);}
@@ -482,7 +510,8 @@ def board_html(rows):
         items += (f'<div class="{cls}"><div class="pos">{pos}</div>'
                   f'<div class="info"><div class="name">{r["Oyuncu"]}</div>'
                   f'{_bar(r)}{_chips(r)}</div>'
-                  f'<div class="pts">{r["Toplam"]}<span>/1000</span></div></div>')
+                  f'<div class="pts">{r["Toplam"]}<span>/1000</span>'
+                  f'<em>tavan {r["Maks"]}</em></div></div>')
     return f'<div class="board">{items}</div>'
 
 
@@ -719,7 +748,8 @@ else:
         actual = demo_actuals(preds)
         src = "Veri alınamadı · demo"
 
-rows = sorted(({"Oyuncu": p, **score_player(preds[p], actual)} for p in C.PLAYERS),
+rows = sorted(({"Oyuncu": p, **score_player(preds[p], actual),
+                "Maks": max_points(preds[p], actual)} for p in C.PLAYERS),
               key=lambda r: r["Toplam"], reverse=True)
 
 st.markdown(f"""<div class="hero">

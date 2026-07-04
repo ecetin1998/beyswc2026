@@ -213,16 +213,21 @@ def build_actuals(matches):
                     s.add(tr)
         return s
 
-    # openfootball knockout placeholder çözümü (R32'yi geç doldurur):
+    # openfootball knockout placeholder çözümü:
     #   "1I"/"2C" = grup pozisyonu -> kendi standings'imizden
     #   "3A/B/C/D/F" = en iyi 3. slotu -> config.R32_THIRD_SLOT (resmi bracket köprüsü)
-    # Kaynak gerçek ismi yazınca placeholder kalmaz, resolve otomatik onu kullanır.
+    #   "W86" = 86 no'lu maçın kazananı -> maç sonucundan (wmap)
+    # Böylece bracket her tur kendi kendine dolar, openfootball'ı beklemez.
+    wmap = {}
+
     def resolve(name):
         t = (name or "").strip()
         if t in C.R32_THIRD_SLOT:
             return C.R32_THIRD_SLOT[t]
         if len(t) in (2, 3) and t[0] in "12" and "/" not in t:
             return actual["group"].get(("Grup " + t[1:], int(t[0])))
+        if len(t) >= 2 and t[0] in "Ww" and t[1:].isdigit():
+            return wmap.get(int(t[1:]))
         return C.to_tr_token(t)
 
     def _winner(m):
@@ -230,17 +235,23 @@ def build_actuals(matches):
         ft = sc.get("ft")
         if not ft:
             return None
-        a, b = ft
         t1, t2 = resolve(m["team1"]), resolve(m["team2"])
         if not t1 or not t2:
             return None
+        a, b = sc.get("et", ft)                 # uzatma varsa uzatma skoru geçerli
         if a != b:
             return t1 if a > b else t2
-        for k in ("p", "pen", "pens", "ps", "penalties"):   # uzatma/penaltı
+        for k in ("p", "pen", "pens", "ps", "penalties"):   # hâlâ beraberse penaltı
             if sc.get(k):
                 pa, pb = sc[k]
                 return t1 if pa > pb else t2
         return None
+
+    # maç-no sırasıyla kazanan haritası (W## hep daha önceki bir maçı gösterir)
+    for m in sorted((x for x in matches if x.get("num")), key=lambda x: x["num"]):
+        w = _winner(m)
+        if w:
+            wmap[m["num"]] = w
 
     def round_winners(cur_round):
         return {w for m in by_round.get(cur_round, []) if (w := _winner(m))}
@@ -511,7 +522,7 @@ def board_html(rows):
                   f'<div class="info"><div class="name">{r["Oyuncu"]}</div>'
                   f'{_bar(r)}{_chips(r)}</div>'
                   f'<div class="pts">{r["Toplam"]}<span>/1000</span>'
-                  f'<em>max puan {r["Maks"]}</em></div></div>')
+                  f'<em>tavan {r["Maks"]}</em></div></div>')
     return f'<div class="board">{items}</div>'
 
 

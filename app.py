@@ -299,6 +299,13 @@ def build_actuals(matches):
     actual["round_settled"]["Yari Final"] = round_settled("Ceyrek Final")
     actual["round_settled"]["Final"] = round_settled("Yari Final")
 
+    # Turnuvadan ELENENLER = gruptan çıkamayanlar ∪ bir KO maçını kaybedenler.
+    # (Sonraki turlarda nötr değil kırmızı görünsünler diye.)
+    elim = all_teams - actual["r32_set"]
+    for k in ("Son 16", "Ceyrek Final", "Yari Final", "Final"):
+        elim |= actual["round_settled"][k] - actual["round_set"][k]
+    actual["eliminated"] = elim
+
     for rnd in C.KO_PAIR_POINTS:
         for m in by_round.get(rnd, []):
             h, a = resolve(m["team1"]), resolve(m["team2"])
@@ -616,20 +623,19 @@ def _round_card(title, teams, actual_set=None, accent=""):
             f'<div class="kteams">{chips}</div></div>')
 
 
-def _pair_card(title, teams, reached=None, settled=None, pairset=None):
-    """Komşu ikilileri eşleşme kutusu olarak göster.
-    İsim: o tura ULAŞAN yeşil · ELENEN (maçı oynanmış, kazanamamış) kırmızı · maçı oynanmamış nötr.
+def _pair_card(title, teams, reached=None, eliminated=None, pairset=None):
+    """İsim: o tura ULAŞAN yeşil · turnuvadan ELENEN kırmızı · hâlâ hayatta ama ulaşmadıysa nötr.
     Kutu: eşleşme doğru yeşil · gerçek rakip belli ama yanlış kırmızı · belirsiz nötr."""
     reached = reached or set()
-    settled = settled or set()
-    matched = set().union(*pairset) if pairset else set()   # gerçek rakibi belli olan takımlar
+    eliminated = eliminated or set()
+    matched = set().union(*pairset) if pairset else set()
 
     def mark(x):
         if x in reached:
             return "ok"          # o tura çıktı (yeşil)
-        if x in settled:
-            return "no"          # maçı oynandı, çıkamadı (kırmızı)
-        return ""                # henüz belli değil (nötr)
+        if x in eliminated:
+            return "no"          # turnuvadan elendi (kırmızı)
+        return ""                # hâlâ hayatta, belli değil (nötr)
 
     units = ""
     for i in range(0, len(teams) - 1, 2):
@@ -719,14 +725,13 @@ def player_predictions_html(pp, actual):
         cards += f'<div class="gcard">{head}{grows}</div>'
     html = f'<div class="ggrid">{cards}</div>'
     html += _round_card("En İyi 3.ler", ordered(pp, "En Iyi 3.ler"), actual["best_third"])
+    elim = actual.get("eliminated", set())
     html += _pair_card("Son 32", ordered(pp, "Son 32"), actual.get("r32_set", set()),
-                       actual["round_settled"].get("Son 32", set()),
-                       actual["pair_set"].get("Son 32", set()))
+                       elim, actual["pair_set"].get("Son 32", set()))
     for label, key in [("Son 16", "Son 16"), ("Çeyrek", "Ceyrek Final"),
                        ("Yarı", "Yari Final"), ("Final", "Final")]:
         html += _pair_card(label, ordered(pp, key), actual["round_set"].get(key, set()),
-                           actual["round_settled"].get(key, set()),
-                           actual["pair_set"].get(key, set()))
+                           elim, actual["pair_set"].get(key, set()))
     champ = pp.get("Sampiyon", {}).get(1, "—")
     champ_set = {actual["champion"]} if actual["champion"] else set()
     html += _round_card("Şampiyon", [champ], champ_set, accent="champ")

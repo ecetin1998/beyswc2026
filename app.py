@@ -362,28 +362,27 @@ def score_player(pp, actual):
 
 
 def max_points(pp, actual):
-    """Buradan sonra her şey oyuncunun dediği gibi giderse alabileceği tavan puan.
-    Grup + en iyi 3. kilitli; KO'da yalnızca HAYATTA olan tahminler sayılır (elenen tavanı düşürür)."""
+    """Buradan sonra her şey oyuncunun dediği gibi giderse tavan puan.
+    Bir KO tahmini sayılır eğer: o puanı ZATEN kazandıysa (kazandığı tur) YA DA takım hâlâ HAYATTA."""
     cur = score_player(pp, actual)
-    grp, b3 = cur["Grup"], cur["En İyi 3"]
-    allt = actual["round_settled"].get("Son 32", set())      # tüm grup takımları (gruplar bitti)
-    r32 = actual.get("r32_set", set())
-    elim = allt - r32                                        # gruptan elenenler
-    for k in ("Son 16", "Ceyrek Final", "Yari Final", "Final"):
-        elim |= actual["round_settled"].get(k, set()) - actual["round_set"].get(k, set())
-    alive = (allt - elim) if allt else set()
+    grp, b3 = cur["Grup"], cur["En İyi 3"]           # grup + en iyi 3. kilitli
+    elim = actual.get("eliminated", set())
     ko_w = 0
     for rnd, pts in C.KO_WINNER_POINTS.items():
         if rnd == "Sampiyon":
             continue
-        ko_w += len(set(ordered(pp, rnd)) & alive) * pts
+        reached = actual["round_set"].get(rnd, set())
+        for t in set(ordered(pp, rnd)):
+            if t in reached or t not in elim:        # kazandı ya da hâlâ hayatta
+                ko_w += pts
     champ = pp.get("Sampiyon", {}).get(1)
-    if champ and champ in alive:
+    if champ and (champ == actual.get("champion") or champ not in elim):
         ko_w += C.KO_WINNER_POINTS["Sampiyon"] + C.CHAMPION_BONUS
     ko_p = 0
     for rnd, pts in C.KO_PAIR_POINTS.items():
+        ps = actual["pair_set"].get(rnd, set())
         for pr in pairs_from(pp, rnd):
-            if pr <= alive:                                 # iki takım da hayatta
+            if pr in ps or not (pr & elim):          # eşleşme oldu ya da iki takım da hayatta
                 ko_p += pts
     return grp + b3 + ko_w + ko_p
 

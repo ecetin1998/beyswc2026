@@ -159,3 +159,12 @@ R32_THIRD_SLOT = {
     "3E/F/G/I/J": "cezayir",
     "3D/E/I/J/L": "gana",
 }
+
+
+# ----------------------------------------------------------------------------
+# openfootball skoru geç girdiğinde elle köprü: maç no -> skor.
+# SADECE kaynakta skor yoksa uygulanır; kaynak skoru girince otomatik devre dışı.
+# ----------------------------------------------------------------------------
+MANUAL_SCORES = {
+    104: {"ft": [0, 0], "et": [1, 0]},   # Final: İspanya 1-0 Arjantin (uzatma, Torres 106')
+}

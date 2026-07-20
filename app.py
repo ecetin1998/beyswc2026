@@ -184,6 +184,15 @@ def rank_thirds(thirds):
 # Gerçek sonuçlar
 # ---------------------------------------------------------------------------
 def build_actuals(matches):
+    # Kaynakta skoru henüz girilmemiş maçlar için elle köprü (config.MANUAL_SCORES).
+    # Kaynak skoru yazınca bu blok hiçbir şey yapmaz -> otomatik devre dışı.
+    manual = getattr(C, "MANUAL_SCORES", {})
+    if manual:
+        matches = [
+            ({**m, "score": manual[m["num"]]}
+             if (m.get("num") in manual and not (m.get("score") or {}).get("ft")) else m)
+            for m in matches
+        ]
     actual = {"group": {}, "best_third": set(),
               "round_set": defaultdict(set), "round_settled": defaultdict(set),
               "pair_set": defaultdict(set), "champion": None}
